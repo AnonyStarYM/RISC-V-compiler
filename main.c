@@ -21,16 +21,54 @@ struct Token {
   int Len;        // 长度
 };
 
-// 输出错误信息
+// 输入的字符串
+static char *CurrentInput;
+
+//======错误处理======
 static void error(char *Fmt, ...) {
+    // 定义一个va_list变量
     va_list VA;
+    // VA获取Fmt后面的所有参数
     va_start(VA, Fmt);
+    // vfprintf可以输出va_list类型的参数
+    vfprintf(stderr, Fmt, VA);
+    // 在结尾加上一个换行符
+    fprintf(stderr, "\n");
+    // 清除VA
+    va_end(VA);
+    // 终止程序
+    exit(1);
+}
+// 输出错误出现的位置
+static void verrorAt(char *Loc, char *Fmt, va_list VA) {
+    // 先输出源信息
+    fprintf(stderr, "%s\n", CurrentInput);
+    // 输出出错信息
+    // 计算出错的位置，Loc是出错位置的指针，CurrentInput是当前输入的首地址
+    int Pos = Loc - CurrentInput;
+    // 将字符串补齐为Pos位，因为是空字符串，所以填充Pos个空格。
+    fprintf(stderr, "%*s", Pos, "");
+    fprintf(stderr, "^ ");
     vfprintf(stderr, Fmt, VA);
     fprintf(stderr, "\n");
     va_end(VA);
+}
+// 字符解析出错，并退出程序
+static void errorAt(char *Loc, char *Fmt, ...) {
+    va_list VA;
+    va_start(VA, Fmt);
+    verrorAt(Loc, Fmt, VA);
+    exit(1);
+}
+// Tok解析出错，并退出程序
+static void errorTok(Token *Tok, char *Fmt, ...) {
+    va_list VA;
+    va_start(VA, Fmt);
+    verrorAt(Tok->Loc, Fmt, VA);
     exit(1);
 }
 
+//======处理Token======
 // 生成新的Token
 static Token *newToken(TokenKind Kind, char *Start, char *End) {
     // 分配1个Token的内存空间
@@ -40,9 +78,9 @@ static Token *newToken(TokenKind Kind, char *Start, char *End) {
     Tok->Len = End - Start;
     return Tok;
 }
-
 // 终结符解析
-static Token *tokenize(char *P) {
+static Token *tokenize() {
+    char *P = CurrentInput;
     Token Head = {};
     Token *Cur = &Head;
 
@@ -68,7 +106,7 @@ static Token *tokenize(char *P) {
             continue;
         }
         // 处理无法识别的字符
-        error("invalid token: %c", *P);
+        errorAt(P, "invalid token");
     }
     // 解析结束，增加一个EOF，表示终止符。
     Cur->Next = newToken(TK_EOF, P, P);
@@ -79,7 +117,7 @@ static Token *tokenize(char *P) {
 // 返回TK_NUM的值
 static int getNumber(Token *Tok) {
     if (Tok->Kind != TK_NUM)
-        error("expect a number");
+        errorTok(Tok, "expect a number");
     return Tok->Val;
 }
 
@@ -94,9 +132,10 @@ static bool equal(Token *Tok, char *Str) {
 // 跳过指定的Str
 static Token *skip(Token *Tok, char *Str) {
     if (!equal(Tok, Str))
-        error("expect '%s'", Str);
+        errorTok(Tok, "expect '%s'", Str);
     return Tok->Next;
 }
+
 
 
 int main(int argc, char **argv){
@@ -104,8 +143,8 @@ int main(int argc, char **argv){
       error("%s: invalid number of arguments", argv[0]);
     }
 
-    Token *Tok = tokenize(argv[1]);
-
+    CurrentInput = argv[1];
+    Token *Tok = tokenize();
     // 声明一个全局main段，同时也是程序入口段
     printf("  .globl main\n");
     // main段标签

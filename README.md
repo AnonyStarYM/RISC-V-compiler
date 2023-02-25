@@ -11,3 +11,5 @@ This project builds a C compiler transfer C to RISC-V assembler.
 - [003] Add a Terminator parser
     - Parse strings by using a linked-list.
     - Wrap the Lexer.
+- [004] Revise error handling
+    - Learned the error handling.
