@@ -14,7 +14,7 @@ test: rvcc
 
 # 清理标签，清理所有非源代码文件
 clean:
-	rm -f rvcc *.o *.s tmp* a.out
+	rm -f rvcc *.o *.s tmp* a.out src/*.o
 
 # 伪目标，没有实际的依赖文件
 .PHONY: test clean

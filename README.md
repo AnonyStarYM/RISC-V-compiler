@@ -17,3 +17,7 @@ This project builds a C compiler transfer C to RISC-V assembler.
     - Split the program into lexer, parser and generator.
     - The parser uses many complicated pointers QAQ
     - sp 为栈指针，栈反向向下增长。
+### [23.02.26]
+- [006] Add unary - +
+
+
