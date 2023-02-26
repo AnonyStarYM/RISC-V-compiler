@@ -24,5 +24,7 @@ This project builds a C compiler transfer C to RISC-V assembler.
     - Learned xor `xor a0, a0, a1 a0=a0^a1，异或指令`, `sltiu a0, a0, 1 等于0则置1`, `sltu a0, x0, a0 不等于0则置1`, seqz, snez, slt.
 - [008] Split main.c
     - Learned how to manage a large project.
+- [009] Add ; to split statement.
+    - Use a linked-list to store statements.
 
 
