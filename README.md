@@ -19,5 +19,8 @@ This project builds a C compiler transfer C to RISC-V assembler.
     - sp 为栈指针，栈反向向下增长。
 ### [23.02.26]
 - [006] Add unary - +
+- [007] Add == != <= >=
+    - Learned how to handle 2-length operators
+    - Learned xor `xor a0, a0, a1 a0=a0^a1，异或指令`, `sltiu a0, a0, 1 等于0则置1`, `sltu a0, x0, a0 不等于0则置1`, seqz, snez, slt.
 
 
