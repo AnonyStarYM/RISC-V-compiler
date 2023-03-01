@@ -3,15 +3,17 @@
 // program = stmt*
 // stmt = exprStmt
 // exprStmt = expr ";"
-// expr = equality
+// expr = assign
+// assign = equality ("=" assign)?
 // equality = relational ("==" relational | "!=" relational)*
 // relational = add ("<" add | "<=" add | ">" add | ">=" add)*
 // add = mul ("+" mul | "-" mul)*
 // mul = unary ("*" unary | "/" unary)*
 // unary = ("+" | "-") unary | primary
-// primary = "(" expr ")" | num
+// primary = "(" expr ")" | ident | num
 static Node* exprStmt(Token** Rest, Token* Tok);
 static Node* expr(Token** Rest, Token* Tok);
+static Node* assign(Token** Rest, Token* Tok);
 static Node* equality(Token** Rest, Token* Tok);
 static Node* relational(Token** Rest, Token* Tok);
 static Node* add(Token** Rest, Token* Tok);
@@ -44,6 +46,12 @@ static Node* newNum(int Val) {
     Nd->Val = Val;
     return Nd;
 }
+// 新变量
+static Node* newVarNode(char Name) {
+    Node* Nd = newNode(ND_VAR);
+    Nd->Name = Name;
+    return Nd;
+}
 
 // 解析语句
 // stmt = exprStmt
@@ -59,9 +67,22 @@ static Node* exprStmt(Token** Rest, Token* Tok) {
     return Nd;
 }
 
-// expr = equality
+// 解析表达式
+// expr = assign
 static Node* expr(Token** Rest, Token* Tok) {
-    return equality(Rest, Tok);
+    return assign(Rest, Tok);
+}
+
+// 解析赋值
+// assign = equality ("=" assign)?
+static Node* assign(Token** Rest, Token* Tok) {
+    // equality
+    Node* Nd = equality(&Tok, Tok);
+    // ("=" assign)?
+    if (equal(Tok, "="))
+        Nd = newBinary(ND_ASSIGN, Nd, assign(&Tok, Tok->Next));
+    *Rest = Tok;
+    return Nd;
 }
 
 // 解析相等性
@@ -177,13 +198,19 @@ static Node* unary(Token** Rest, Token* Tok) {
     return primary(Rest, Tok);
 }
 
-// 解析括号、数字
-// primary = "(" expr ")" | num
+// 解析括号、数字、变量
+// primary = "(" expr ")" | ident｜ num
 static Node* primary(Token** Rest, Token* Tok) {
     // "(" expr ")"
     if (equal(Tok, "(")) {
         Node* Nd = expr(&Tok, Tok->Next);
         *Rest = skip(Tok, ")");
+        return Nd;
+    }
+    // ident
+    if (Tok->Kind == TK_IDENT) {
+        Node* Nd = newVarNode(*Tok->Loc);
+        *Rest = Tok->Next;
         return Nd;
     }
     // num

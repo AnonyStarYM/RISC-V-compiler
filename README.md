@@ -26,5 +26,8 @@ This project builds a C compiler transfer C to RISC-V assembler.
     - Learned how to manage a large project.
 - [009] Add ; to split statement.
     - Use a linked-list to store statements.
-
+### [23.03.01]
+- [010] Support assign 1-char variable
+    - Use `fp` to store the address of stack base.
+    - Learned how to handle assign in assemblr.
 
