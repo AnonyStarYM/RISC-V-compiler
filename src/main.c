@@ -8,10 +8,10 @@ int main(int argc, char** argv) {
     Token* Tok = tokenize(argv[1]);
 
     // 解析终结符流
-    Node* Nd = parse(Tok);
+    Function* Prog = parse(Tok);
 
     // 生成代码
-    codegen(Nd);
+    codegen(Prog);
 
     return 0;
 }
