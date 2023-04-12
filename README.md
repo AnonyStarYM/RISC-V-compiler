@@ -30,5 +30,9 @@ This project builds a C compiler transfer C to RISC-V assembler.
 - [010] Support assign 1-char variable
     - Use `fp` to store the address of stack base.
     - Learned how to handle assign in assemblr.
-- [010] Support assign multi-char variable
+- [011] Support assign multi-char variable
     - Add a function structure, an object struture representing variables.
+### [23.04.12]
+- [012] Support "return"
+    - Add `.L.return:` label and statement `j .L.return`
+    - Change rule to `stmt = "return" expr ";" | exprStmt`
