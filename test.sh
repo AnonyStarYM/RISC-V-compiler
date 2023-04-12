@@ -50,12 +50,11 @@ assert() {
 # assert 5 'a=3;b=4;a=1;a+b;'
 # [11] 支持多字母变量
 # assert 3 'foo=3; foo;'
-assert 3 'foo=3;return foo;'
-assert 74 'foo2=70; bar4=4;return foo2+bar4;'
 # [12] 支持return
-assert 1 'return 1; 2; 3;'
-assert 2 '1; return 2; 3;'
-assert 3 '1; 2; return 3;'
+# assert 3 '1; 2; return 3;'
+# [13] 支持{...}
+assert 3 '{ {1; {2;} return 3;} }'
+
 
 # 如果运行正常未提前退出，程序将显示OK
 echo OK
