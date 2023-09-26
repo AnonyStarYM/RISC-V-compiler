@@ -12,11 +12,11 @@ assert() {
   ./rvcc "$input" > tmp.s || exit
   # 编译rvcc产生的汇编文件
 #   gcc -o tmp tmp.s
-  ~/riscv/bin/riscv64-unknown-linux-gnu-gcc -static -o tmp tmp.s
+  ~/Documents/Code/RVCC/riscv/bin/riscv64-unknown-linux-gnu-gcc -static -o tmp tmp.s
 
   # 运行生成出来目标文件
 #   ./tmp
-  ~/riscv/bin/qemu-riscv64 -L ~/riscv/sysroot ./tmp
+  ~/Documents/Code/RVCC/riscv/bin/qemu-riscv64 -L ~/Documents/Code/RVCC/riscv/sysroot ./tmp
   # $RISCV/bin/spike --isa=rv64gc $RISCV/riscv64-unknown-linux-gnu/bin/pk ./tmp
 
   # 获取程序返回值，存入 实际值
